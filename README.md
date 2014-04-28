@@ -130,9 +130,9 @@ We introduce a new cryptographic primitive called a public broadcast channel and
 - the messages arrive in order
 - the message cannot be modified in transmission
 
-The public broadcast channel is a block chain. Each block contains messages. Only the person with a specific private key can create new blocks for the chain. A block requires a valid signature from a known public key to be valid. Only the person with the private key can mint new blocks and everyone can verify individually that each block was produced by the holder of the private key.
+The public broadcast channel is implemented as a block chain. Everyone can read the chain, but only the owner can mint blocks for it. To be valid for a personal chain, each block must be signed by the owners private key. 
 
-Peers subscribe to a blockchains and pass blocks peer-to-peer. Each Obelisk node has a personal blockchain and it is the core primitive in the Obelisk system. Skycoin can take a pubkey hash and automatic find peers replicating the desired blockchain through DHT and PEX and then downloads the chain peer to peer.
+Each Obelisk node has a personal blockchain and it is the core primitive in the Obelisk system.
 
 The public broadcast channel imposes several constraints
 - Once a block is published, it cannot be unpublished (blocks are replicated peer to peer to all subscribers. Once a block has been published, it spreads to all subscribers. You have to destroy all peers who have received the block to erase it from internet).
@@ -144,108 +144,100 @@ The public broadcast channel imposes several constraints
 Obelisk: 
 =======
 
-Each Obelisk node (Skycoin Consensus Node) has a public key (an identity) and personal blockchain (a public broadcast channel). Consensus decisions and communication happen within the personal blockchains of each Obelisk node. This is a public record of everything a node does.
+Each Obelisk node (Skycoin Consensus Node) has a public key (an identity) and personal blockchain (a public broadcast channel). Consensus decisions and communication happen within the personal blockchains of each Obelisk node. This is a public record of everything a node does. This allows the community to audit nodes for cheating and collusion. It gives the community a way identify nodes which are participating in attacks on the network and it makes public how decisions in the network are being made and which nodes are influencing those decisions.
 
-This allows the community to audit nodes for cheating and collusion. It gives the community a way identify nodes which are participating in attacks on the network and it makes public how decisions in the network are being made and which nodes are influencing those decisions.
+Each node has a list of other nodes that it subscribes to. Nodes with more subscribers are more "trusted" and yield more influence in the network. If the community does not trust the nodes representing them or feels that power within the network is too concentrated (or not concentrated enough) the community is able to collectively shift the balance of power in the network by collectively changing their trust relationships in the network.
 
-Each node has a list of other nodes that it is subscribed to. Nodes with more subscribers are more "trusted" and yield more influence in the network. If the community does not trust the nodes representing them or feels that power within the network is too concentrated (or not concentrated enough) the community is able to collectively shift the balance of power in the network by collectively changing their subscription relationships in the network.
+Node subscription relationships can be random and/or can be formed through web of trust (subscribe to nodes of people you know and people in community you trust).
 
-Node subscription relationships can be random and/or can be through web of trust (subscribe to nodes of people you know and people in community you trust).
-
-When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block, in the next block produced by the node. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked chains of block acknowledgements. These chains establish causal relationships and can act as a distributed time stamping system as described in the next section. This allows the network to prove that data did not exist or was not published to the network or establish that particular nodes were active or offline during a particular time interval.
+When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block it publishes. This is a public cknowledgement of the receipt of the block. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked chains of block acknowledgements. These chains establish causal relationships and can act as a distributed time stamping system as described in the next section. This allows the network to prove that data did not exist or was not published to the network or establish that particular nodes were active or offline during a particular time interval.
 
 The current Obelisk consensus algorithm is based upon Ben-Or's randomized consensus algorithm.
 
-A Sybil attack in a random graph (worse case) allows the Sybil nodes to control consensus, but the nodes are unable to revert transactions, removing the only economic incentive to attack the network. In real world graphs the Sybil resistance of the network is actually very high and running a node is moderately costly in terms of bandwidth, which make large botnets prohibitive. Furthermore, there is no economic incentive to attack the network without a viable 51% attack and nodes can be made costly by requiring proof-of-burn (Destroying a Bitcoin) or by limiting random peering of new nodes to nodes with an operating history which is 85th percentile for the network. The network formed by botnets and the web-of-trust network are mostly disjoint and easily identified as discrete subgraphs of the network. There is no influence advantage from having a large number of nodes. Disjoint and weakly connected subgraphs of the network have very weak influence.
+A Sybil attack in a random graph (worse case) allows the Sybil nodes to control consensus, but the nodes are unable to revert transactions, removing the only economic incentive to attack the network. In real world graphs the Sybil resistance of the network is actually very high and running a node is moderately costly in terms of bandwidth, which make large botnets prohibitive.
 
-Trust relationships in the community are scarce. Each person has interactions and relationships with multiple other people and the network is densely connected and interlinked. 
+Trust relationships are scarce and can be rescinded. In the event of an attack, the network reacts by severing connects to less trustworthy nodes and contracting to a smaller core of trusted nodes. The public record left by each node's personal blockchain makes it very easy to identify the nodes participating in an attack. As attacking nodes are identified individuals sever  relationships with those nodes, reducing their influence.
 
-Trust relationships are scarce and can be rescinded. In the event of an attack, the network reacts by contracting to a smaller core of trusted nodes and severing relationships with nodes participating in network disruption. Nodes automatically sever relationships with nodes that elicit a class of bannable behavior. The public record left by each node's personal blockchain makes it very easy to identify the nodes participating in an attack. Individuals can then severe relationships with those nodes, or sever relationships with nodes who refuse to sever their relationships with the malicious nodes.
 
-Obelisk is very general. Each node can run consensus decisions for multiple different coins in the same blockchain. Its even possible to imagine voting and consensus on more general things (such as userbase accepting an upgrade candidate, dealing with forks, and fiscal policy such as voting on whether a project proposal should be funded from inflation).
+- Skycoin consensus is democratic and nodes are run by the community. 
+- Skycoin node consensus is public
+- Every node is accountable to the community and 3rd party audits.
+- Influence within the Skycoin consensus system is democratic and transparent (but unequal).
 
-Note on Ripple:
-
-Many people have said that this sounds like Ripple. This type of consensus algorithm was developed by academic research into Ben-Or and Paxos.  This is similar to Ripple superficially, but is completely different. This is similar to the old Ripple (which we like), in that trust relationships are extended between people, but has no relationship to the new Ripple (which we do not like).
-
-Differences from Ripple
-- Skycoin consensus is democratic and nodes are run by the community. Ripple consensus is determined by nodes run by financial institutions and the developers. Ripple is highly centralized. Anyone can run a Ripple node, but it does not affect the network unless you can get Bitstamp or the Ripple developers to put your node on their trust list.
-- Skycoin node consensus is public and every node is accountable to the community, the public and 3rd party audits. Ripple consensus is in private behind closed doors and malicilous actions by node cannot be detected or known by the public.
-- Influence within the Skycoin consensus system is democratic and public. Influence within Ripple is a blackbox.
-- What the nodes are actually doing is completely different
-
-Binary Consensus: Choosing between two blocks
+Simple Binary Consensus Algorithm: Choosing between two blocks
+====
 
 Each voting decision is a hash pair (A,B). A is the hash of the parent of the block and B is the hash of the block.
 
 Each node votes on the next block it believes should be the consensus block. If 40% of the nodes it is subscribed to have the same candidate for consensus, the node changes its consensus to that block. The node flips randomly between candidates until consensus is reached.
 
-Faster convergence is achieved if the flip probabilities depend on the votes of the peers the node is subscribed to.
+Consensus on Multiple Concurrent Branch Choices:
+====
 
-Consensus on Multiple Choices:
+A more advanced system publishes (A,B, P) Where P is value from 0 to 1. P values across all successors to block would sum to 1. This allows for concurrent consensus decisions on multiple chain branches.
 
-A more advanced system publishes (A,B, P) Where P is value from 0 to 1. P values across all successors to block would sum to 1. This allows for concurrent consensus decisions on multiple chain branches. This system has faster convergence when there is a choice of multiple blocks for the next consensus decision.
+Ff the majority of nodes in the network are honest, they will also converge to the same consensus.
 
-If all nodes are honest, they will all eventually converge to the same consensus decision for the successor of each block. If the majority of nodes in the network are honest, they will also converge to the same consensus (except for pathological graph topologies with disjoint subgraphs). The emphasis here should be on eliminating blocks until there are only two candidate blocks across the network.
-
-To strength this further, we introduce a form of Proof of Stake. We give users coin hours. A user accumulates one coin hour for each hour a coin is held in an address. Coin hours are spent on transaction fees and we bias voting in favor of blocks with a larger transaction fee.
+Skycoin also has a limited form of Proof of Stake. We bias voting in favor of blocks with a larger transaction fee.
 
 If there are only two possible consensus choices for given parent and both blocks execute your transaction, then the transaction is effectively executed regardless of which of the two blocks end up chosen by the network.
 
-In this sequential, probabilistic consensus algorithm the probability of reversion of an early consensus decision declines exponentially with block depth.
+The probability of reversion of an early consensus decision declines exponentially with block depth.
 
-A variant uses two levels of consenus signaling. 0 to 254 might be probabilities. If 40% of the nodes you subscribe to meet some agreement threshold, you flip to their consensus value. Then once all the nodes you are subscribe to are in unanimous agreement, you transmit 255 signalling unamious agreement, which means you will stop randomly flipping to other values for that block.
 
-By constructing the network link adjacency matrix, we can compute the Eigenvalue centrality measure which measures the influence of each node. We can cluster the graph and find the influential subclusters of nodes and then sampling nodes from the subclusters can determine if global consensus has been reached.  In general, local consensus reflects global consensus but this gives us a "Global Decision Oracle" and helps us compute other properties of the graph such as the probability of a block with 2 confirmations in a particular cluster being reverted for a particular graph topology.
+Advanced Topics in Consensus
+====
 
-The efficiency of the algorithm declines rapidly with the number of blocks the network has to choose from in each round. We may use Proof of Work, with no reward and difficulty retarget as a throttle rate on the introduction of new candidate blocks. The mining difficulty may depend on some hash of the node id. Or we may require proof of stake and decrease mining time based upon the transaction fee of the first transaction in the block.  We are still working on block introduction throttling rules that is invariant to the number of nodes in the network and cannot be gamed.
+By constructing the network link adjacency matrix, we can compute the Eigenvalue centrality measure which measures the influence of each node. We can cluster the graph and find the influential subclusters of nodes and then sampling nodes from the subclusters can determine if global consensus has been reached.
 
-If we could guarantee only a single block per decision period in a fair way, then the consensus becomes for show or is only used to resolve the special case where more than one block is contending. Another method is imposing a total ordering on the blocks in the consenus round and dropping all but the top. Example: the block with the largest transaction fee that was published within fifteen seconds of the last block. There is no way to do an exact, fair, distributed time stamp everyone will agree one, but any way to construct a total ordering would work.
+The efficiency of the algorithm declines with the number of blocks the network has to choose from in each round. We may use Proof of Work, with no reward and difficulty retarget as a throttle rate on the introduction of new candidate blocks.
 
-Another method uses a "fair" block lottery to choose the node that will mint the next block. It has to exploit the graph structure so trusted people and not sybil atack nodes get the block minting rights. Its easy to construct if you have the global graph and replicate all chains for each node, but very difficult to construct in a way that can be verified/fair with only the local information available to each node.
+If we could guarantee a single block per decision period, consensus becomes trivial. We can achieve this by imposing a total ordering on the blocks in the consenus round and dropping all but the top. Example: the block with the largest transaction fee that was published within fifteen seconds of the last block. There is no way to do an exact, fair, distributed time stamp everyone will agree one, but any way to construct a total ordering would work.
 
-For example, you can use the consensus to vote for a commitee of nodes that will mint blocks and the right to mint the next block just passes around in circles over the list of elected nodes. Once you get the system in place, you can try different things. If the blockchains have a scripting language, a virtual machine and a program, then nodes can communicate and act autonomously. People could update their node's program to watch out for and automaticly kick deadbeats off the elected board of block minters. If enough nodes added that script, it would become an enforced rule.
+Another method uses a "fair" block lottery to choose the node that will mint the next block. It has to exploit the graph structure so trusted people and not sybil atack nodes get the block minting rights. Its easy to construct if you have the global graph and replicate all chains for each node, but very difficult using only local information available to each node.
 
-The blockchains become sort of ballots with scriptable behavior. Individuals can add scripts to their node for detecting bad nodes and severing relationships with them. The network can acquire attack immunity locally, through the actions of individual users choosing the scripts to run on their node instead of from a central patch by the developers.
+In another scheme, you use the consensus to vote a commitee of nodes to mint block. The right to mint the next block passes around in circles over a list of elected nodes. Once the system in place, you can try different things. Nodes can be programmed to communicate and act autonomously. People can update their node's program to automaticly kick deadbeats off the elected board of block minters. If enough nodes added that script, it would become an enforced rule.
+
+The personal blockchains act as ballots with scriptable behavior. Individuals can add scripts to their node for detecting bad nodes and severing relationships with them. The network can acquire attack immunity locally, through the actions of individual users choosing the scripts to run on their node instead of from a central patch by the developers.
+
+We are at an early stage of understanding what is possible with personal blockchains.
 
 Attack Types:
 
-There are three types of attacks
-- dominating decisions on block consensus
-- reverting consensus which had previously become unanimous
-- delaying consensus
+===
+
+There are four types of attacks
+- dominating decisions on block consensus (potential denial of service)
+- reverting consensus which had previously become unanimous (double spending)
+- delaying consensus (denial of service)
 - attacking individual nodes by controlling their view of the network
 
-An adversary who controls the majority of the nodes in the network can control the consensus decisions of the network. However, they are unable to easily double spend (revert previous consensus). A adversary which controls the network can vote for blocks that contain no transactions and other annoyances. Such behavior is easily detected (public behavior) and the participating nodes easily banned by hand if they become disruptive.
+An adversary who controls the majority of the influence in the network controls the consensus decisions of the network. However, they are unable to easily double spend or 51% attack. A adversary which controls the network can vote for blocks that contain no transactions and other annoyances. Such behavior is easily detected (public behavior) and nodes easily banned if they become disruptive.
 
-To revert consensus, requires a majority of nodes to be hostile and collude. The simplest attack requires a subgraph of malicious nodes to be the majority of the network, must go offline (sever communication with the main network), must make a consensus decision that differs from the majority of the network and then resume communication with the rest of the network. Any node which is connected to a majority of nodes will revert consensus to the decision of the sub graph of the network involved in the attack. If the attacking nodes are less than a majority, the effort will fail.
+To revert consensus, requires a majority of nodes to be hostile and collude. The malicious majority must go offline, allow the main network to reach a particular consensus and then resume communication with the rest of the network. Any node which whose connections consist of a majority of attacking nodes will be successfully recruited in the 51% attack (in the naive version). However, If the attacking nodes are less than a majority, the effort will fail.
 
-This is the only way to revert transactions. This is the only attack and is extremely easy to detect and trustworthy nodes would quickly sever relationships with nodes participating in such an attack. Subgraphs involved in the attack are likely to be densely connected and do not influence the network as much as more tightly integrated subgraphs. It is not enough to have a simple majority of node, to revert consensus a single adversary much control nodes which the majority of nodes have subscription and trust relationships with.
+This is the only way to revert transactions. This is the only attack and is extremely easy to detect. Trustworthy nodes quickly sever relationships with attacking nodes. Subgraphs involved in the attack are likely to be densely connected and do not influence the network as much as more tightly integrated subgraphs. It is not enough to have a simple majority of nodes, to revert consensus an adversary much control nodes which control a majority of scarce subscription and trust relationships. Sybil attack bots have difficulty networking into a human web of trust network.
 
-In web of trust graphs, influence is highly concentrated with nodes trusted by the community and controlled by Skycoin stakeholders. It is extremely unlikely that a majority of a large number of trusted community members and institutions could collude in an attack without any of the conspirators publishing the plot. Furthermore, after the attack or attempted attack the community members who participated are publicly identifiable and their trust relationships would be severed.
+In web of trust graphs, influence is highly concentrated with nodes trusted by the community and controlled by Skycoin stakeholders. It is extremely unlikely a majority of trusted community members and institutions would benefit from, or even be able to organize a successfull majority influence attack. Community members participating are publicly identifiable and would suffer severe trust penalities for being associated with an attack attempt.
 
-Despite the difficulty and unlikelyhood of consensus reversion under Skycoin's basic consensus algorithm, we believe that it is desirable and possible to prevent the attack entirely through two separate methods. The first method severely restricts the way voting decisions are made, to greatly increase the cost and difficulty of collusion and increase the ease of detection. The second way uses the public broadcast channels and counter signed block receipts to establish a distributed time stamping system that can prove a node was not communicating with the network at the time of its consensus decision and disregard (and possibly ban) the attacking nodes.
+Despite the difficulty of double spending under Skycoin, it is possible to prevent the attack entirely through two separate methods. The first method severely restricts the way voting decisions are made, to greatly increase the difficulty of collusion between nodes. The second way uses distributed time stamping to identify attack nodes .
 
 Attacks Against Individual Nodes: Easier than Attacking Network
+====
 
-Bitcoin suffers weaknesses from several attacks, where an attacker who controls an router or can inject reset packets onto a network connection, can control the peers the Bitcoin node can connect to and engage in double spending and loot the coin in possession of that node by forking the blockchain of the node without having to attack the whole Bitcoin network. As the price of Bitcoin rises, these attacks become more likely and profitable. Skycoin introduces a "consensus oracle" to safe guard against these attacks and protect banks and exchanges. The Skycoin consensus oracle verifies ensures that an individual node is synced with the global network. The Skycoin consensus oracle uses a list of public keys from a user chosen set of trusted nodes and verifies the local consensus state against the global consensus of these nodes. Any discrepancy between the nodes can result in an alert prompting human action or automatic safeguard measures such as suspending trading on an exchange before funds can be withdrawn and stolen.
+Individual Bitcoin nodes suffers vulnability to attacker who controling the network router. Such an attack can inject reset packets and control who the node can connect to. Victims can be setup for a double spending attack and coins stolen by forking the blockchain of indivial node without needing to attack the Bitcoin network. As the price of Bitcoin rises, these attacks become more likely and profitable.
 
-:
-
-To improve security for banks and other financial institutions, Skycoin is introducing the "Gateway Protocol" which is an open transactions style system of cryptographically countersigned signed receipts for custody and transfer of cryptoassets. The Gateway Protocol establishes an auditing trail and chain of custody for cryptoassets. The Gateway Protocol enables automatic and early detection of theft and compartmentalizes authority and authorization for asset transfers.
-
-A typical use case of the gateway protocol is to prevent the theft at custodial institutions, which have frequently plagued Bitcoin's short history (MtGox). For example, in an exchange with user accounts and deposited Bitcoins, the Gateway Protocol enables a separation between the trading engine which manages accounts for individual users and the coin storage server which authorizes withdrawals. Under the current system exchanges implementing trading systems send a command to the coin storage server with a command "Withdrawl 10,000 BTC to this address" with no protections in place against theft or hacking. Any hacker who gains access to the trading engine is able to withdrawal the full balance of the coins in storage and can result in significant theft and liabilities for institutions holding coins for third parties.
-
-Any employee or contractor of MtGox who had access to the trading servers was in a position to obtain the keys to authorize unlimited withdrawals from coin storage and steal hundreds of millions of assets. The Skycoin Gateway Protocol is one of the first steps towards a security and auditing framework for cryptoassets.
-
-Under the Skycoin Gateway Protocol, the coin storage server is able to verify a chain of unforgable cryptographic receipts and limit the withdraws individual users can authorize to the balances available to that user account. The Gateway Protocol enables a three level compartmentalization with a full audit trail between user accounts, business functions and cryptoasset storage. Machine readable receipts enable automatic verification against public transaction ledgers and early detection of unauthorized asset transfers and theft.
+Skycoin introduces a "consensus oracle" to protect banks and exchanges from targeted attacked on individual nodes. The Skycoin consensus oracle verifies an individual node is in sync with global network. The Skycoin consensus oracle uses a list of public keys of user chosen trusted nodes and verifies against the list. Discrepancy bresult in an alert prompting human action or safeguard measures such as suspending exchange withdrawls before funds can be stolen.
 
 
 Publicly Verifiable Trusted Computing with Communicating Distributed Deterministic State Machines:
+=====
 
-We describe a system, were each node performs a computation in public that can be verified and replicated by any third party. We show how third parties can perform computations that can be replicated and audited by third parties and which have no trust assumptions. This system consists of deterministic state machines communicating over a public broadcast channel (private blockchain).
+We describe a system, were each node performs a computation in public. The computationa can be verified and replicated by any third party. This system consists of deterministic state machines communicating over a public broadcast channel (private blockchains).
 
-The first method requires that consensus decisions are the results of a deterministic state machine, whose inputs are public data. We require that the output published in a blockchain by a node, be a deterministic function of the block data published by the nodes that the node is subscribed to. This allows any third party to download the public blockchains that are inputs to a node and themselves replicate and verify the output of an untrusted third party. The outputs produced by hte third party should match exactly the block that was produced and published by the untrusted node. A third party auditor can under this system, produce a mathematical proof that can be verified by any receiving party, proving the existence of a discrepancy and cheating. This restriction becomes bannable and results in automatic revocation of trust relationship and the node would be severed from the network and unable to influence voting decisions.
+Consensus decisions published in the block chain become outputs of a deterministic state machine, whose inputs are public data. We require that the output published in a blockchain by a node, be a deterministic function of the block data published by the nodes subscribed to. Any third party can download the public inputs to a node and verify that the output matches exactly the outu (the block ) produced and published by the untrusted node. 
+
+A third party auditor produce amathematical proof accepted by any receiving party, proving  existence of cheating by a dishonest node. Such cheating becomes bannable and results in automatic revocation of trust relationship. The node would be severed from the network and unable to influence voting decisions.
 
 A practical implementation of this system, requires 
 - the implementation of a state machine or well defined virtual machine
