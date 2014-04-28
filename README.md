@@ -222,7 +222,7 @@ In web of trust graphs, influence is highly concentrated with nodes trusted by t
 
 Despite the difficulty of double spending under Skycoin, it is possible to prevent the attack entirely through two separate methods. The first method severely restricts the way voting decisions are made, to greatly increase the difficulty of collusion between nodes. The second way uses distributed time stamping to identify attack nodes .
 
-Attacks Against Individual Nodes: Easier than Attacking Network
+Subverting Individual Bitcoin Nodes: Easier Than Attacking Network
 ====
 
 Individual Bitcoin nodes suffers vulnability to attacker who controling the network router. Such an attack can inject reset packets and control who the node can connect to. Victims can be setup for a double spending attack and coins stolen by forking the blockchain of indivial node without needing to attack the Bitcoin network. As the price of Bitcoin rises, these attacks become more likely and profitable.
