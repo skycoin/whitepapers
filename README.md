@@ -2,19 +2,18 @@ Skycoin: A New System for Distributed Consensus
 ===========
 
 Abstract: 
-This paper overviews Bitcoin as a solution to the byzantine generals problem. A new cryptographic primitive known as a public broadcast channel is introduced. A new consensus algorithm implementation, Obelisk and new coin Skycoin built upon Obelisk are introduced. Obelisk is not a single algorithm, but an implementation employing multiple techniques to deliver specific security guarantees. Obelisk prevents a  
+A new cryptographic primitive known as a public broadcast channel is introduced. A new consensus algorithm implementation, Obelisk and new coin Skycoin built upon Obelisk are introduced. Obelisk is not a single algorithm, but an implementation employing multiple techniques to deliver specific security guarantees.
 
 
 Bitcoin
 =======
+Overview Of Bitcoin as a solution to the byzantine generals problem. 
 
-Bitcoin introduce a public transaction ledger called the blockchain. The blockchain is a sequence of blocks containing transactions. The state of Bitcoin balances is a set of outputs. Outputs are spent in a transaction as inputs and new outputs are created. Each output is associated to an address, which is a cryptographic hash of public key. A transaction is not valid unless signed by a signature created by a private key whose public key hashes to address the output is associated with. The person in possession of the private key for an addresses, therefore owns the output and has discretion to authorize the participation of an output in a transaction.
-
-New transactions are placed into a block, which is appended to the blockchain. Any peer in the Bitcoin network can create new blocks. Each block therefore has a single parent but one or more valid successors.  The chains form a tree and the core problem of Bitcoin is determining which of prospective chains in the the chaintree is the valid one.
+New transactions are placed into a block, which is appended to the blockchain. Any peer in the Bitcoin network can create new blocks. Each block therefore has a single parent but one or more valid successors (children).  The chains form a tree and the core problem of Bitcoin solves is getting every node in the network to agree on which which of prospective chains in the chaintree is the consensus blockchain.
 
 Bitcoin uses a technique called Proof-of-Work to determine a unique blockchain. A valid block requires a hash value which is below a target value. Nodes add transactions to a new block and randomly try notches until a valid hash for a block is found.
 
-A function is used to create a total ordering of chains in the blocktree. The chain which has the highest difficulty and required the most hashing operations to produce is "the longest chain" and consensus chain.
+A function is used to create a total ordering of chains in the blocktree. The chain which has the highest difficulty and required the most hashing operations to produce is "the longest chain" and consensus chain. The notion of "block depth" and "difficulty" create a total ordering over all linear chains in the blocktree and we accept the most resource intensive to produce chain as the consensus chain.
 
 Bitcoin nodes connect to each other randomly and each node relays the most difficult chain of blocks that it knows about to its peers. If one node has a more difficult to produce chain than another connected peer, the peer will receive the blocks sequentially. The peer will evaluate the function and decide that received chain is more difficult to produce and therefore switch its consensus to the received chain. The peer will then advertise its new chain to its peers. In this way, consensus is propagated throughout the network and all nodes reach the same consensus.
 
@@ -71,14 +70,13 @@ The criteria on which Bitcoin can be improved are
 
 We introduce a system called Obelisk which achieves these objectives.
 
-Obelisk: Distributed Consensus
+Byzantine Generals Problem In The Real World
 ======
 
 
 The Byzantine Generals Problem is a model used by academics for designing algorithms that allow networks of computers to come to an agreement. A successful consensus algorithm requires all of the honest nodes to come to the same agreement.
 
 In the Byzantine Generals Problem, you have N generals sieging a city. The generals can only communicate over faulty communication channels and all must come to the same decision. They must all attack on the same day. To conquer the city, all the generals must either attack or stay put. If one general attacks, all the generals should attack and if one waits, all generals should wait. If one general attacks and the other generals stay put, the siege fails. The generals can only communicate by letter and the letters may not arrive or may arrive late. 
-
 
 In the academic version of the Byzantine Generals Problem, the failures are benign. Maybe a general does not get a letter. The represents faulty but benign computer servers which should all come to the same state.  The real world Byzantine Generals Problem is called the "Adversarial Byzantine Generals Problem". The Adversarial Byzantine Generals problem is what happens when someone has a financial incentive to attack the network.
 
@@ -89,6 +87,7 @@ In Bitcoin, they will go even further and engage in bribery and hacking. They wi
 A secure system must not only protect against every known attack, but be robust enough to evolve and survive all future attacks. Some issues in Bitcoin can be fixed, such as signature malleability. Other issues are fundamental and cannot be addressed without defining an entireley new framework, such as the reliance on Proof of Work and miners.
 
 Skycoin Security Philosphy:
+========
 
 Security is a process of continuous identification and fortification against threats. A good system achieves "defense in depth", has multiple redundant systems and will survive the complete failure of any individual measure. 
 
@@ -147,11 +146,13 @@ Obelisk:
 
 Each Obelisk node (Skycoin Consensus Node) has a public key (an identity) and personal blockchain (a public broadcast channel). Consensus decisions and communication happen within the personal blockchains of each Obelisk node. This is a public record of everything a node does.
 
-This allows the community to audit nodes for cheating and collusion. It gives the community a way identify nodes which are participating in attacks on the network and it makes it very public how decisions in the network are being made and which nodes are influencing those decisions. If the community does not trust the nodes representing them or feels that power within the network is too concentrated (or not concentrated enough) the community is able to collectively shift the balance of power in the network.
+This allows the community to audit nodes for cheating and collusion. It gives the community a way identify nodes which are participating in attacks on the network and it makes public how decisions in the network are being made and which nodes are influencing those decisions.
 
-Each node has a list of other nodes that it is subscribed to. Nodes with more subscribers are more "trusted" and yield more influence in the network. When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block, in the next block produced by the node. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked mesh of block receipts that establish a distributed time stamping system as described in the next section.
+Each node has a list of other nodes that it is subscribed to. Nodes with more subscribers are more "trusted" and yield more influence in the network. If the community does not trust the nodes representing them or feels that power within the network is too concentrated (or not concentrated enough) the community is able to collectively shift the balance of power in the network by collectively changing their subscription relationships in the network.
 
-Node subscription relationships can be random and/or can be through web of trust (subscribe to nodes of people you know and people in community you trust). Networks combining web of trust relationships with random connections are robust against Sybil attack, but we assume a random graph for worse case security analysis. The distributed timestamping system can also be used to determine the creation time and verify continuous operation of nodes. New peers can be made hesitant to peer with nodes without a reputation or substantial operating history, increasing the cost of Sybil attack.
+Node subscription relationships can be random and/or can be through web of trust (subscribe to nodes of people you know and people in community you trust).
+
+When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block, in the next block produced by the node. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked chains of block acknowledgements. These chains establish causal relationships and can act as a distributed time stamping system as described in the next section. This allows the network to prove that data did not exist or was not published to the network or establish that particular nodes were active or offline during a particular time interval.
 
 The current Obelisk consensus algorithm is based upon Ben-Or's randomized consensus algorithm.
 
