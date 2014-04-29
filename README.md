@@ -227,7 +227,7 @@ Subverting Individual Bitcoin Nodes: Easier Than Attacking Network
 
 Individual Bitcoin nodes suffers vulnability to attacker who controling the network router. Such an attack can inject reset packets and control who the node can connect to. Victims can be setup for a double spending attack and coins stolen by forking the blockchain of indivial node without needing to attack the Bitcoin network. As the price of Bitcoin rises, these attacks become more likely and profitable.
 
-Skycoin introduces a "consensus oracle" to protect banks and exchanges from targeted attacked on individual nodes. The Skycoin consensus oracle verifies an individual node is in sync with global network. The Skycoin consensus oracle uses a list of public keys of user chosen trusted nodes and verifies against the list. Discrepancy bresult in an alert prompting human action or safeguard measures such as suspending exchange withdrawls before funds can be stolen.
+Skycoin introduces a "consensus oracle" to protect banks and exchanges from targeted attacked on individual nodes. The Skycoin consensus oracle verifies an individual node is in sync with global network. The Skycoin consensus oracle takes a list of public keys of user chosen trusted nodes and verifies against the list. Discrepancy result in an alert prompting human action and safeguard measures such as suspending exchange withdrawls before funds can be stolen.
 
 
 Publicly Verifiable Trusted Computing with Communicating Distributed Deterministic State Machines:
@@ -235,9 +235,11 @@ Publicly Verifiable Trusted Computing with Communicating Distributed Determinist
 
 We describe a system, were each node performs a computation in public. The computationa can be verified and replicated by any third party. This system consists of deterministic state machines communicating over a public broadcast channel (private blockchains).
 
-Consensus decisions published in the block chain become outputs of a deterministic state machine, whose inputs are public data. We require that the output published in a blockchain by a node, be a deterministic function of the block data published by the nodes subscribed to. Any third party can download the public inputs to a node and verify that the output matches exactly the outu (the block ) produced and published by the untrusted node. 
+Consensus decisions published in the block chain become outputs of a deterministic state machine, whose inputs are public data. We require that the output published in a blockchain by a node, are a deterministic function of the block data published by the nodes subscribed to. Any third party can download the public inputs to a node and verify that the output matches exactly the output (the block ) produced and published by the node. 
 
-A third party auditor produce amathematical proof accepted by any receiving party, proving  existence of cheating by a dishonest node. Such cheating becomes bannable and results in automatic revocation of trust relationship. The node would be severed from the network and unable to influence voting decisions.
+This approached was developed for and heavily influenced by research into adversarial Paxos. We call the implementation of Paxos on a public broadcast channel "Public Paxos".
+
+A third party auditor can produce a mathematical proof which can be indepedently verified by third parties, proving cheating by a dishonest node. Such cheating becomes bannable and results in automatic revocation of trust relationships. The node would be severed from the network by honest nodes and unable to influence voting decisions.
 
 A practical implementation of this system, requires 
 - the implementation of a state machine or well defined virtual machine
@@ -245,12 +247,14 @@ A practical implementation of this system, requires
 - requires a hash of the program that the state machine is running, which determines its output (block produced)
 - requires publication of hash of blocks received from peers in the feed
 
+We augment the personal blockchain with a datastructure containing some rarely changing fixed information, including the state machine's subscription list and program source code. The node publishes the hash of it subscription list and virtual machine source code in each block and publishes the subscription list and program source.
+
 Example:
 
 Node A is subscribed to the private chains of Node B and Node C. B mints block B1. A receives B1. A publishes a block, which includes the hash of B1 to signify the receipt of the data. The block produced by A, A1 is a deterministic function of B1.  C publishes block C1. A publishes block A1, which include a hash of block C1 it its block acknowledgement list. A2 produces and publishes and signs block A2, which must be a deterministic function of B1,C1.
 
 Note:
-- all inputs are public (information published in a public broadcast channel)
+- all inputs are public and available to 3rd parties (information published in a public broadcast channel)
 - outputs produced by each node are deterministic functions of public input
 - any 3rd party can download the same data, run the same program and generate the same output as the node itself
 - the state of the machine, which generates the output might be a queue of the last 1024 blocks acknowledge by the node
@@ -261,13 +265,26 @@ Overview:
 - the state of each machine is a queue of received messages from other state machines
 - each state machine when invoked produces an output block published into the machines public broadcast channel
 - the output block contains hashes (receipts) of received messages and data
-- the output block is a deterministic function of the queue of received messages
+- the output block is a deterministic function of the queue of received messages over the last N blocks, for finite N
 
-In this system, nodes are highly constrained. The only leeway nodes receive is twiddling with the order of messages are acknowledged.
+In this system, nodes are highly constrained. The only leeway nodes receive is twiddling the order that messages are acknowledged. The types of attacks a node can partipate in without detection is severely limited.
 
-Distributed Time Stamping:
+Thoughts on Distributed Time Stamping:
+====
 
 The simplest time stamping service is a trusted central server with a known public key and an accurate clock. The server receives hashes and produces a signed timestamp of the hash with its private key. If the server can be trusted, the signed timestamp can be used to prove that data existed at a particular time.
+
+Accurate, trusted digital time stamps have many applications. They can be used to determine if a node was online at a particular time, they can be used to detect and eliminate particular types of attacks which require withholding publications of the data to the network until a later time and then revealing the data suddenly (such as Bitcoin 51% attacks) and can be used to establish a total ordering on blocks. 
+
+For example, Distributed blockchain consensus with a reliable timestamping server is trivial. The rule "Accept the block with the highest fees which was produced within 15 seconds of the previous block" achieves blockchain consensus. This rule uniquely determines a unique successor block. In fact if an accurate and honest timestamping service exists then this simple rule produces a 51% attack network with no mining and extremely low operational overhead.
+
+The original Obelisk design was based upon constructing a distributed timestamping, but only worked in a fully connected graph.  No distributed time stamping system could achieve provable consensus on the total ordering of events between all nodes in the network using only the local information available to individual nodes. Each node only sees a subset of the network. The fully connected case of a small number of servers is a special case where each node has a "global" view and eventually arrives at the same data and consesus as all other nodes. Public broadcast channels and fully connected graphs make the byzantine generals problem fairly trivial.
+
+While time stamp consensus and a full total ordering of events could not be achieved from the local information available to a node, randomized consensus allows provable global consenus from local information for non-pathological graph topologies. However, we were able to prove a weaker result which allows nodes to derive upper and lower bounds (a temporal interval) on events in the network. These bounds are local to each node or subset of nodes in the network and are very useful for detecting and preventing some type of Sybil attacks.
+
+
+Distributed Time Stamping:
+====
 
 We show how you can create a distributed timestamping authority using the Obelisk public broadcast channel, time stamped blocks and receipts for block acknowledgements.
 
@@ -282,7 +299,6 @@ Having this information allows us to build detection systems for cheating nodes.
 Each node is subscribed to the block chain of a list of other nodes. Every few seconds each node publishes a new block. Each block is time stamped and includes a list of hashes (receipts) of the blocks the node has received since the last block it published. Each published block is cryptographicly signed by the publishing node's private key.
 
 Each node is constantly publishing timestamped blocks and publishing receipts for blocks published by other nodes. This forms a dense, interlinking mesh of timestamps and receipts and counter receipts and make it very difficult for malicious node backdate events without detection.
-
 
 The public broadcast channel imposes several constraints
 - Once a block is published, it cannot be unpublished (blocks are replicated peer to peer to all subscribers. Once a block has been published, it spreads to all subscribers. You have to destroy all peers who have received the block to erase it from internet).
@@ -304,17 +320,25 @@ Node A receives block B2.
 Node A publishes block A3 with time T3. A3 includes hash of block B2.
 
 
-This is called a "2-cycle". If A trusts themselves and believes that their clock is honest, then A knows that block B2 existed and was published between times T1 and T3. There are higher order cycles, 3-cycles, 4-cycles and so on in the receipt graph. This establishes a distributed time stamping system with a calculus of temporal intervals.
+This is called a "2-cycle". If A trusts themselves and believes that their clock is honest, then A knows that block B2 existed and was published between times T1 and T3.
 
-You can show that, if a block  X1  published at time T, a cycle starting at a honest node and ending on the same honest node ending on T2, that T < T2. This upper bounds the publication time. If we have a receipt for a trusted node of successor block X0 with timestamp T1, T1 < T. The timestamp of the receipt of the previous block (X0) lower bounds the time interval for the publication of X1. We therefore have an interval.
+If B2 was published before T1, then B2 could not include the hash of A1, because A1 did not exist yet. The probaility of guessing the hash by luck is 1 in 2^256.
+
+If B2 was published after T3, then A3 could not include the hash of B2, because A3 could not include a hash for a block that did not exist at the time A3 was created.
+
+Therefore B2 must have been produced after A1 was published and before A3 was published. Therefore if the clock of Node A is accurate and honest, B2 was created and published between times T1 and T3.
+
+Therefore this construction allows us to prove with certainty that events happened on certain temporal intervals with respect to Node A's clock. There are higher order cycles, 3-cycles, 4-cycles and so on in the receipt graph. This establishes a distributed time stamping system with a calculus of temporal intervals.
+
+You can show that, if a block  X1  published at time T, a cycle starting at a honest node and ending on the same honest node ending on T2, that T < T2. This upper bounds the publication time. If we have a receipt for a trusted node of successor block X0 with timestamp T1, T1 < T. The timestamp of the receipt of the previous block (X0) lower bounds the time interval for the publication of X1. This is another way of producing intervals using the monotonously increasing clock assumption.
 
 Some nodes are honest and do not lie. Some nodes try to lie about timestamps and the order messages were received. If we have a cycle between dishonest nodes, the time stamps can be anything, subject to the constraint of the public broadcast channel. However if the cycle of receipts contains at least one honest node then it places a constraint on the timestamps.
 
 If we have a cycle of receipts, A -> B, B-> C, we say that the two cycles "interlink". Cycles between receipts within the subgraph of honest nodes interlink broadly. The multiple, interlinking timestamp and receipts form a dense interlinked mesh. If you say something existed at time 3, but did not publish it to network until time 8, all the honest nodes in network will have a timestamp of your block announcing the thing, with time greater than or equal to 8. Only nodes on a subgraph of lying or cheating nodes will have a lower timestamp.
 
-Receipt Cycles Establish a Fair Total Ordering of Events with Respect to a Given Block Chain:
+Receipt Cycles Establish a Fair Total Ordering of Events with Respect to the Clock of a Given Node:
 
-To prove that a block Z existed by time 5, we can find a sequence of blocks that reference each other by hash, X1 -> Y1 -> Z1 -> X2. If block X2 was published by a trusted/honest node with an accurate clock, then the timestamp on block X2 upper bounds the time Z1 was published to the network, even if we do not trust the node that published block Y or the node that published Z. 
+To prove that a block Z existed by time 5, we can find a sequence of blocks that reference each other by hash, X1 -> Y1 -> Z1 -> X2. If block X2 was published by a trusted/honest node with an accurate clock, the timestamp on block X2 upper bounds the time Z1 was published to the network, even if we do not trust the node that published block Y or the node that published Z. 
 
 Choose a node X. We want to establish a temporal ordering on blocks with respect to X. We enumerate all cycles that originate at X (assume only cycles with one loop, cycles that start at X and end at X and do not pass through X multiple times). Each block will be contained in one or more cycles starting at X and ending at X. We say the time of a block with respect to X for a particular cycle is the time of the receipt produced by X that ends the cycle. For each event we choose the cycle with lowest ending timestamp, for each cycle that contains the event.
 
@@ -338,7 +362,7 @@ X publishes X3 (with timestamp t=5) with receipt for Z1
 
 Block Y1 is involved in two cycles of X in this example. If we trust the clock of X, then we know that Y1 existed and was published before t=3 (we take the lower of the two cycles). If Y1 was the successor to block Y0, then we can lower bound the time Y1 was published at the time stamp of the block by X which acknowledges Y0.
 
-This produces a time upper and lower bound for any block that can be reached by a receipt chain from X and which leads back to X. For a well conditioned graph, this will include nearly all blocks. For upper bounds for a block time we take the least of any cycle ending time. For lower bounds we take the greater of the cycle ending times for the predeceding block.
+This produces a time upper and lower bound for any block that can be reached by a receipt chain from X and which leads back to X. For a well conditioned graph, this will include nearly all blocks. For upper bounds for block publication time we take the least of any cycle ending time. For lower bounds we take the greater of the cycle ending times for the predeceding block.
 
 We can generalize this notion from "time with respect to node X" to time with respect to a subgraph of trusted nodes in the network. We take a subset of the network. We assume the nodes in the network have synced clocks and report time accurately. We allow a "cycle" that ends on any node in the subgraph and ends on any other node in the subgraph.
 
@@ -346,6 +370,26 @@ If nodes publish blocks every fifteen seconds or every minute, we can confidentl
 
 In a random graph of N nodes, where the block time per node is a constant k (say 15 seconds), the interval to which a random events can reliability be causally resolved assuming only a single trusted node, grows with an upper bound of  k*log(N). 
 
-The distributed timestamping system can be used to prevent a 51% attack by even a majority of nodes, simply by rejecting and severing relationships with nodes who disconnect from the network and then reappear with provably backdated consensus decisions for blocks that were provably not published to the network at the claimed time.  These types of Sybil attacks are identical to netsplits. In a well functioning network, no one would be able to coordinate this many trusted colluding nodes, so are unsure how much effort this merits.
 
-A node would only change its consensus decision if the majority of nodes it is subscribed to are Sybil attack nodes partipating in the attack. There are very specific conditions that have to be met for a subset of nodes to collude and flip a consensus decision the network has already converged to, to a different block.
+Methods to Eliminate the 51% Attack:
+======
+
+The distributed timestamping system can be used to prevent a 51% attack by even a majority of nodes, simply by rejecting and severing relationships with nodes who disconnect from the network and then reappear with provably backdated consensus decisions for blocks that were provably not published to the network at the claimed time.
+
+Similarly, nodes can become automaticly untrusted for remaining connected to the network and spontaneously deciding to attempt to revert previously established consensus for no justifiable reason.
+
+In Bitcoin the classical 51% attack, a miner with majority hash power forks the blockchain, keeping his blocks secret. The miner gets ahead of the network in secret and suddenly publishes his longer chain. The network instantly switches to the attackers longer chain. Transactions are reverted and coins may have been stolen from exchanges.
+
+The evil miner deposited Bitcoin in an exchange, bought Litecoin, withdraws the litecoin and uses a 51% attack to revert the deposit transaction and get his Bitcoin back but keeping the Litecoin. Then he uses the Litecoin to buy back cheap Bitcoin after the theft hits the media. The miner further more buys put options on Bitcoin and further magnifies his gains. The evil miner also decides to rob a bank at the same time, by depositing Bitcoin, withdrawling the Bitcoin and then reverting the deposit transaction. He now has both the withdrawn coins and the coins he never deposited from any bank which has not taken extremely difficult security measures.
+
+In Skycoin, the distributed time stamping system allows individual nodes to determine locally that a node witheld information from the network and suddenly published it in a 51% attack attempt. Each node locally evaluates the information and chooses whether to ignore the influence of the potentially malicious node. In this way, a successful attack in a random graph now requires over 80% to 90% of the influential network nodes, not merely a majority. The honest nodes simply detect and ignore the 51% attack attempt.
+
+If each Node is informed by an indepedent but unreliable oracle for determining global consensus (each node samples consensus of a independent random subgraphs of the network), we believe the probability of a successful attack after a few block confirmations can be made arbritarily close to zero. This approach combines local information with indepedent random sampling of the global network state. Local state is used to determine and negotiate consensus and subgraphs of the global network are sampled to probabilistically determine if global network consensus has been reached and to detect netsplits.
+
+Knowledge about the probability of global consensus on a block can be used to decide whether an attempt to fork an earlier block should be accepted. In the naive approach, if a majority of the nodes subscribed vote for a fork of an earlier block, the node will accept this fork.
+
+With a global consensus oracle, the votes for the fork become weighted by the belief that the purposed changes are a result of the legitimite process through which nodes in the network come into agreement (the network is still arriving at global consensus), or whether agreement has already been reached unanimously a long time ago and this is merely an attack in an attempt to revert previous consensus (for which there is no valid valid after global consensus has become unamimous among the active nodes).
+
+Another prospective approach uses a hybrid system of Ben Or randomized consensus on a web of trust to vote a commitee of trusted masternodes, who form a fully connected public Quorum which determines block consensus. The commitee election might be daily and more resources can be put into verifying global consensus on the single commitee election than verifying consensus on individual blocks.
+
+We are looking at several different approaches. Skycoin consensus will change as we develop better algorithms and software infrastructure.
