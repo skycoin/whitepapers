@@ -23,39 +23,39 @@ Bitcoin does not assume that nodes have identities and does not assume that node
 Innovation in Bitcoin
 ====
 
-Bitcoin has made several innovations that need to be kept in mind
+Bitcoin has made several innovations that need to be kept in mind:
 - a single datastructure that everyone has a copy of (the blockchain)
 - storing financial transactions in the blockchain (public ledger for transactions)
 - use of PoW and difficulty retargeting to maintain a constant rate of block production
 - use of public key hashes as addresses (public keys are not disclosed until used)
-- use of "outputs" for balances. Ignores trying to create divisible digital cash. To pay $20, send $25, $20 to person and $5 back to yourself.
+- use of "outputs" for balances. Ignores trying to create divisible digital cash: To pay $20 from a $25 output, send $20 to person and $5 back to yourself.
 - first use of function (PoW difficulty function and block depth) to define total ordering on block trees
 - public ledger circumvents double spending problem in traditional digital cash
 
 Flaws in the Bitcoin System
 ============================
 
-The Bitcoin system suffers from three flaws:
+The Bitcoin system suffers from these flaws:
 
-- Consensus decisions in Bitcoin are not final and can be reverted. A person or organization who can rent or buy enough hashing power, can revert transactions.
-- Bitcoin achieves network consensus but individual Bitcoin nodes are highly vulnerable to adversaries who control the routers through which packets pass. A router controlling adversary has absolute control over the view of a node of the network and can arbitrarily influence the nodes consensus decisions. Attacking a Bitcoin node used by a bank to execute a double spending attack is easier than attacking the whole network to do a double spending attack.
+- Consensus decisions in Bitcoin are not final and can be reverted. A person or organization who can rent or buy enough hashing power can revert transactions.
+- Bitcoin achieves network consensus but individual Bitcoin nodes are highly vulnerable to adversaries who control the routers through which packets pass. A router controlling adversary has absolute control over the view of a node of the network and can arbitrarily influence the nodes consensus decisions: Attacking a Bitcoin node used by a bank to execute a double spending attack is easier than attacking the whole network to do a double spending attack.
 - The security of the Bitcoin network depends upon the cost to achieve majority hash rate being too great for an individual or organization that would attack the network. This is not a valid assumption. As Bitcoin grows in success and value, the incentives to attack the network have increased. 
-- Successful attacks can steal incredible sums from exchanges ($400 million in the most recent MtGox attack). An skilled attacker can buy alt coins from an exchange in Bitcoin and then 51% attacks to revert the Bitcoin deposit transaction. The user now has both the Bitcoin and the coins and the exchange is insolvent because of liabilities to depositors that cannot be met.
+- Successful attacks can steal incredible sums from exchanges ($400 million in the most recent MtGox attack). An skilled attacker can buy alt coins from an exchange in Bitcoin and then 51% attacks to revert the Bitcoin deposit transaction. The user now has both the Bitcoin and the alt coins and the exchange is insolvent because of liabilities to depositors that cannot be met.
 - Attackers can steal substantial sums from banks and gambling sites. An attacker deposits Bitcoin and then withdraws it. The attacker uses a 51% attack to revert the deposit transaction, while keeping the withdraw transaction. Such an attack is likely to come suddenly, be extremely profitable and affect all Bitcoin operating services, who are not fortified against the possibility.
 - As Bitcoin matures, criminals can gain massively by buying options against Bitcoin and attacking the network. In the future, successful attacks on Bitcoin could result in several hundred millions of dollars in profit from options trading. 
 - The cost to achieve majority hash rate may not be high enough to protect against a dedicated attacker. KNC miner has shipped batches of 200 units for $10,000 each, which together achieved majority hashrate. The cost to attack the Bitcoin network is therefore less than 2 million dollars.
-- The cost to attack the Bitcoin network is within the resources of nation states and corporations who may attempt to discredit the security of Bitcoin. Countries with strong capital controls and competing corporations may directly attack the Bitcoin  network to protect their financial interests.
-- Services which allow "cloud hashing" and rental of 3rd party hash power are increasingly successful. Many large pool now have the ability to rent the hash power for a majority attack.
+- The cost to attack the Bitcoin network is within the resources of nation states and corporations who may attempt to discredit the security of Bitcoin. Countries with strong capital controls and competing corporations may directly attack the Bitcoin network to protect their financial interests.
+- Services which allow "cloud hashing" and rental of 3rd party hash power are increasingly successful. Many large pools now have the ability to rent the hash power for a majority attack.
 - Hackers can use numerous security holes in routers and networking equipment to steal coins from banks and exchanges. An attacker can control the peers a Bitcoin node is connected to and ensure connections to attacker controlled nodes. An attacker may introduce a deposit transaction to the side chain of a bank and get the bank to issue a withdraw transaction which is then relayed to the main network. 
 - Bitcoin cannot offer security at a low cost. The cost to run the Bitcoin network is extremely high. The Bitcoin network is using immense and exponentially growing amounts of electricity and is environmentally irresponsible. Bitcoin's security purposely relies upon creating as much electrical waste as possible. A secure system costs more to attack than defend. In a well designed system, $1 in security costs $1000 to circumvent. In Bitcoin the ratio is $1 to $1.
-- Bitcoin transactions take 10 minutes. Bitcoin fundamentally cannot decrease transaction times without compromising security. This hinders Bitcoin adaption at the point of sale.
+- Bitcoin transactions take on average 10 minutes to get included in a block, and more time is required for more security. Bitcoin fundamentally cannot decrease transaction times without compromising security. This hinders Bitcoin adaption at the point of sale.
 
 These are the issues that must be addressed. In light of these issues, Bitcoin should be regarded as embryonic, but not final form of cryptocurrencies. Future currencies will improve significantly on Bitcoin and surpass it in many ways.
 
 Desirable Properties For Systems of Distributed Consensus for Financial Ledgers
 ==========
 
-The criteria on which Bitcoin can be improved are
+The criteria on which Bitcoin can be improved are:
 1. Security
 2. Efficiency
 3. Speed
