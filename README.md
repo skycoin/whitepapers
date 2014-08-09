@@ -23,39 +23,39 @@ Bitcoin does not assume that nodes have identities and does not assume that node
 Innovation in Bitcoin
 ====
 
-Bitcoin has made several innovations that need to be kept in mind
+Bitcoin has made several innovations that need to be kept in mind:
 - a single datastructure that everyone has a copy of (the blockchain)
 - storing financial transactions in the blockchain (public ledger for transactions)
 - use of PoW and difficulty retargeting to maintain a constant rate of block production
 - use of public key hashes as addresses (public keys are not disclosed until used)
-- use of "outputs" for balances. Ignores trying to create divisible digital cash. To pay $20, send $25, $20 to person and $5 back to yourself.
+- use of "outputs" for balances. Ignores trying to create divisible digital cash: To pay $20 from a $25 output, send $20 to person and $5 back to yourself.
 - first use of function (PoW difficulty function and block depth) to define total ordering on block trees
 - public ledger circumvents double spending problem in traditional digital cash
 
 Flaws in the Bitcoin System
 ============================
 
-The Bitcoin system suffers from three flaws:
+The Bitcoin system suffers from these flaws:
 
-- Consensus decisions in Bitcoin are not final and can be reverted. A person or organization who can rent or buy enough hashing power, can revert transactions.
-- Bitcoin achieves network consensus but individual Bitcoin nodes are highly vulnerable to adversaries who control the routers through which packets pass. A router controlling adversary has absolute control over the view of a node of the network and can arbitrarily influence the nodes consensus decisions. Attacking a Bitcoin node used by a bank to execute a double spending attack is easier than attacking the whole network to do a double spending attack.
+- Consensus decisions in Bitcoin are not final and can be reverted. A person or organization who can rent or buy enough hashing power can revert transactions.
+- Bitcoin achieves network consensus but individual Bitcoin nodes are highly vulnerable to adversaries who control the routers through which packets pass. A router controlling adversary has absolute control over the view of a node of the network and can arbitrarily influence the nodes consensus decisions: Attacking a Bitcoin node used by a bank to execute a double spending attack is easier than attacking the whole network to do a double spending attack.
 - The security of the Bitcoin network depends upon the cost to achieve majority hash rate being too great for an individual or organization that would attack the network. This is not a valid assumption. As Bitcoin grows in success and value, the incentives to attack the network have increased. 
-- Successful attacks can steal incredible sums from exchanges ($400 million in the most recent MtGox attack). An skilled attacker can buy alt coins from an exchange in Bitcoin and then 51% attacks to revert the Bitcoin deposit transaction. The user now has both the Bitcoin and the coins and the exchange is insolvent because of liabilities to depositors that cannot be met.
+- Successful attacks can steal incredible sums from exchanges ($400 million in the most recent MtGox attack). An skilled attacker can buy alt coins from an exchange in Bitcoin and then 51% attacks to revert the Bitcoin deposit transaction. The user now has both the Bitcoin and the alt coins and the exchange is insolvent because of liabilities to depositors that cannot be met.
 - Attackers can steal substantial sums from banks and gambling sites. An attacker deposits Bitcoin and then withdraws it. The attacker uses a 51% attack to revert the deposit transaction, while keeping the withdraw transaction. Such an attack is likely to come suddenly, be extremely profitable and affect all Bitcoin operating services, who are not fortified against the possibility.
 - As Bitcoin matures, criminals can gain massively by buying options against Bitcoin and attacking the network. In the future, successful attacks on Bitcoin could result in several hundred millions of dollars in profit from options trading. 
 - The cost to achieve majority hash rate may not be high enough to protect against a dedicated attacker. KNC miner has shipped batches of 200 units for $10,000 each, which together achieved majority hashrate. The cost to attack the Bitcoin network is therefore less than 2 million dollars.
-- The cost to attack the Bitcoin network is within the resources of nation states and corporations who may attempt to discredit the security of Bitcoin. Countries with strong capital controls and competing corporations may directly attack the Bitcoin  network to protect their financial interests.
-- Services which allow "cloud hashing" and rental of 3rd party hash power are increasingly successful. Many large pool now have the ability to rent the hash power for a majority attack.
+- The cost to attack the Bitcoin network is within the resources of nation states and corporations who may attempt to discredit the security of Bitcoin. Countries with strong capital controls and competing corporations may directly attack the Bitcoin network to protect their financial interests.
+- Services which allow "cloud hashing" and rental of 3rd party hash power are increasingly successful. Many large pools now have the ability to rent the hash power for a majority attack.
 - Hackers can use numerous security holes in routers and networking equipment to steal coins from banks and exchanges. An attacker can control the peers a Bitcoin node is connected to and ensure connections to attacker controlled nodes. An attacker may introduce a deposit transaction to the side chain of a bank and get the bank to issue a withdraw transaction which is then relayed to the main network. 
 - Bitcoin cannot offer security at a low cost. The cost to run the Bitcoin network is extremely high. The Bitcoin network is using immense and exponentially growing amounts of electricity and is environmentally irresponsible. Bitcoin's security purposely relies upon creating as much electrical waste as possible. A secure system costs more to attack than defend. In a well designed system, $1 in security costs $1000 to circumvent. In Bitcoin the ratio is $1 to $1.
-- Bitcoin transactions take 10 minutes. Bitcoin fundamentally cannot decrease transaction times without compromising security. This hinders Bitcoin adaption at the point of sale.
+- Bitcoin transactions take on average 10 minutes to get included in a block, and more time is required for more security. Bitcoin fundamentally cannot decrease transaction times without compromising security. This hinders Bitcoin adaption at the point of sale.
 
 These are the issues that must be addressed. In light of these issues, Bitcoin should be regarded as embryonic, but not final form of cryptocurrencies. Future currencies will improve significantly on Bitcoin and surpass it in many ways.
 
 Desirable Properties For Systems of Distributed Consensus for Financial Ledgers
 ==========
 
-The criteria on which Bitcoin can be improved are
+The criteria on which Bitcoin can be improved are:
 1. Security
 2. Efficiency
 3. Speed
@@ -78,15 +78,15 @@ The Byzantine Generals Problem is a model used by academics for designing algori
 
 In the Byzantine Generals Problem, you have N generals sieging a city. The generals can only communicate over faulty communication channels and all must come to the same decision. They must all attack on the same day. To conquer the city, all the generals must either attack or stay put. If one general attacks, all the generals should attack and if one waits, all generals should wait. If one general attacks and the other generals stay put, the siege fails. The generals can only communicate by letter and the letters may not arrive or may arrive late. 
 
-In the academic version of the Byzantine Generals Problem, the failures are benign. Maybe a general does not get a letter. The represents faulty but benign computer servers which should all come to the same state.  The real world Byzantine Generals Problem is called the "Adversarial Byzantine Generals Problem". The Adversarial Byzantine Generals problem is what happens when someone has a financial incentive to attack the network.
+In the academic version of the Byzantine Generals Problem, the failures are benign. Maybe a general does not get a letter. The represents faulty but benign computer servers which should all come to the same state. The real world Byzantine Generals Problem is called the "Adversarial Byzantine Generals Problem". The Adversarial Byzantine Generals problem is what happens when someone has a financial incentive to attack the network.
 
-There are dishonest generals and they will do everything possible to ensure that consensus fails. Dishonest generals can lie. They can tell one general one thing and another something else. Dishonest generals can kill the messager of another general so that a message sent is not received. Dishonest generals can forge messages from other generals. Dishonest generals can change the message an honest general sent. The dishonest generals can collude.
+There are dishonest generals and they will do everything possible to ensure that consensus fails. Dishonest generals can lie. They can tell one general one thing and another something else. Dishonest generals can kill the messenger of another general so that a message sent is not received. Dishonest generals can forge messages from other generals. Dishonest generals can change the message an honest general sent. The dishonest generals can collude.
 
 In Bitcoin, they will go even further and engage in bribery and hacking. They will hunt down your employees and hack into the computers of contractors to gain access to your servers. They will manipulate system clocks, compromise routers, use hash collisions, flood the network with hundreds of thousands of bots and exploit signature malleability.
 
-A secure system must not only protect against every known attack, but be robust enough to evolve and survive all future attacks. Some issues in Bitcoin can be fixed, such as signature malleability. Other issues are fundamental and cannot be addressed without defining an entireley new framework, such as the reliance on Proof of Work and miners.
+A secure system must not only protect against every known attack, but be robust enough to evolve and survive all future attacks. Some issues in Bitcoin can be fixed, such as signature malleability. Other issues are fundamental and cannot be addressed without defining an entirely new framework, such as the reliance on Proof of Work and miners.
 
-Skycoin Security Philosphy:
+Skycoin Security Philosophy:
 ========
 
 Security is a process of continuous identification and fortification against threats. A good system achieves "defense in depth", has multiple redundant systems and will survive the complete failure of any individual measure. 
@@ -97,7 +97,7 @@ Good security achieves a multiplier effect. A dollar that costs an attacker ten 
 
 No single system could achieve all of the objectives a successor to Bitcoin requires. Skycoin instead takes a modular layered approach and uses different systems to enforce particular guarantees. Skycoin was designed as a fortress with multiple layers of overlapping defense. 
 
-Skycoin security is focused on protecting against the existential threats to Bitcoin and the daily threats that day to day users face. Skycoin security attempts to give the highest degree of protection against the class of attacks that would inflict the greatest loses upon its users, stakeholders and institutions.  This required a complete redesign of Bitcoin at both ends from wallet generation to blockchain consensus. It requires a vision of what we are trying to achieve and requires fundamental innovation in several areas to get there.
+Skycoin security is focused on protecting against the existential threats to Bitcoin and the daily threats that day to day users face. Skycoin security attempts to give the highest degree of protection against the class of attacks that would inflict the greatest loses upon its users, stakeholders and institutions. This required a complete redesign of Bitcoin at both ends from wallet generation to blockchain consensus. It requires a vision of what we are trying to achieve and requires fundamental innovation in several areas to get there.
 
 Most of the losses in Bitcoin have been from oversights in design, lack of usability and at the end user rather than fundamental technical attacks on the software or mathematics. A user backs up his wallet, makes some transactions and reformats his computer. He thinks his coins are safe because he has a wallet backup (unlike his stupid friend who lost hundreds of thousands of dollars in Bitcoin because they forgot to make backups). He loads the wallet and half his coins are missing. Bitcoin generates new addresses and sends coins to those addresses as change every transactions, but the new addresses are not in the wallet backup because they were not generated at the time the backup was made.
 
@@ -150,13 +150,13 @@ Each node has a list of other nodes that it subscribes to. Nodes with more subsc
 
 Node subscription relationships can be random and/or can be formed through web of trust (subscribe to nodes of people you know and people in community you trust).
 
-When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block it publishes. This is a public cknowledgement of the receipt of the block. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked chains of block acknowledgements. These chains establish causal relationships and can act as a distributed time stamping system as described in the next section. This allows the network to prove that data did not exist or was not published to the network or establish that particular nodes were active or offline during a particular time interval.
+When a node receives a new block from a chain it is subscribed to, it publishes the hash of the block it publishes. This is a public acknowledgment of the receipt of the block. Each block is timestamped and counter references blocks from other chains. This creates a dense interlinked chains of block acknowledgments. These chains establish causal relationships and can act as a distributed time stamping system as described in the next section. This allows the network to prove that data did not exist or was not published to the network or establish that particular nodes were active or offline during a particular time interval.
 
 The current Obelisk consensus algorithm is based upon Ben-Or's randomized consensus algorithm.
 
 A Sybil attack in a random graph (worse case) allows the Sybil nodes to control consensus, but the nodes are unable to revert transactions, removing the only economic incentive to attack the network. In real world graphs the Sybil resistance of the network is actually very high and running a node is moderately costly in terms of bandwidth, which make large botnets prohibitive.
 
-Trust relationships are scarce and can be rescinded. In the event of an attack, the network reacts by severing connects to less trustworthy nodes and contracting to a smaller core of trusted nodes. The public record left by each node's personal blockchain makes it very easy to identify the nodes participating in an attack. As attacking nodes are identified individuals sever  relationships with those nodes, reducing their influence.
+Trust relationships are scarce and can be rescinded. In the event of an attack, the network reacts by severing connections to less trustworthy nodes and contracting to a smaller core of trusted nodes. The public record left by each node's personal blockchain makes it very easy to identify the nodes participating in an attack. As attacking nodes are identified individuals sever relationships with those nodes, reducing their influence.
 
 
 - Skycoin consensus is democratic and nodes are run by the community. 
@@ -176,7 +176,7 @@ Consensus on Multiple Concurrent Branch Choices:
 
 A more advanced system publishes (A,B, P) Where P is value from 0 to 1. P values across all successors to block would sum to 1. This allows for concurrent consensus decisions on multiple chain branches.
 
-Ff the majority of nodes in the network are honest, they will also converge to the same consensus.
+If the majority of nodes in the network are honest, they will also converge to the same consensus.
 
 Skycoin also has a limited form of Proof of Stake. We bias voting in favor of blocks with a larger transaction fee.
 
@@ -192,11 +192,11 @@ By constructing the network link adjacency matrix, we can compute the Eigenvalue
 
 The efficiency of the algorithm declines with the number of blocks the network has to choose from in each round. We may use Proof of Work, with no reward and difficulty retarget as a throttle rate on the introduction of new candidate blocks.
 
-If we could guarantee a single block per decision period, consensus becomes trivial. We can achieve this by imposing a total ordering on the blocks in the consenus round and dropping all but the top. Example: the block with the largest transaction fee that was published within fifteen seconds of the last block. There is no way to do an exact, fair, distributed time stamp everyone will agree one, but any way to construct a total ordering would work.
+If we could guarantee a single block per decision period, consensus becomes trivial. We can achieve this by imposing a total ordering on the blocks in the consensus round and dropping all but the top. Example: the block with the largest transaction fee that was published within fifteen seconds of the last block. There is no way to do an exact, fair, distributed time stamp everyone will agree one, but any way to construct a total ordering would work.
 
 Another method uses a "fair" block lottery to choose the node that will mint the next block. It has to exploit the graph structure so trusted people and not sybil atack nodes get the block minting rights. Its easy to construct if you have the global graph and replicate all chains for each node, but very difficult using only local information available to each node.
 
-In another scheme, you use the consensus to vote a commitee of nodes to mint block. The right to mint the next block passes around in circles over a list of elected nodes. Once the system in place, you can try different things. Nodes can be programmed to communicate and act autonomously. People can update their node's program to automaticly kick deadbeats off the elected board of block minters. If enough nodes added that script, it would become an enforced rule.
+In another scheme, you use the consensus to vote a committee of nodes to mint block. The right to mint the next block passes around in circles over a list of elected nodes. Once the system in place, you can try different things. Nodes can be programmed to communicate and act autonomously. People can update their node's program to automatically kick deadbeats off the elected board of block minters. If enough nodes added that script, it would become an enforced rule.
 
 The personal blockchains act as ballots with scriptable behavior. Individuals can add scripts to their node for detecting bad nodes and severing relationships with them. The network can acquire attack immunity locally, through the actions of individual users choosing the scripts to run on their node instead of from a central patch by the developers.
 
